@@ -6,6 +6,9 @@ import { z } from "zod";
 import { db } from "@/db";
 import { users, posts, connections, CATEGORIES } from "@/db/schema";
 import { currentUser, setSession, clearSession } from "./session";
+import { getOpenPosts } from "./queries";
+import { buildMatchAlerts } from "./alerts";
+import { sendMatchAlerts, sendWelcome } from "./email";
 
 const wizardPostSchema = z.object({
   title: z.string().trim().min(3).max(80),
@@ -34,7 +37,19 @@ export async function joinNeighborhood(
     ...gives.map((g) => ({ ...g, kind: "give" as const, userId: user.id })),
     ...needs.map((n) => ({ ...n, kind: "need" as const, userId: user.id })),
   ];
-  if (rows.length > 0) await db.insert(posts).values(rows);
+  let matchCount = 0;
+  if (rows.length > 0) {
+    const inserted = await db.insert(posts).values(rows).returning();
+    const pool = await getOpenPosts();
+    const alerts = buildMatchAlerts(
+      inserted.map((p) => ({ ...p, user })),
+      pool,
+    );
+    // Each alert pair is mutual: their matched post ↔ this user's new post.
+    matchCount = alerts.reduce((n, a) => n + a.pairs.length, 0);
+    await sendMatchAlerts(alerts);
+  }
+  await sendWelcome(user, matchCount);
 
   await setSession(user.id);
   revalidatePath("/");
@@ -81,6 +96,10 @@ export async function createPost(formData: FormData) {
     .insert(posts)
     .values({ ...parsed.data, userId: user.id })
     .returning();
+
+  const pool = await getOpenPosts();
+  await sendMatchAlerts(buildMatchAlerts([{ ...post, user }], pool));
+
   revalidatePath("/");
   redirect(`/post/${post.id}`);
 }
