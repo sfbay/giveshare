@@ -16,7 +16,7 @@ export default async function FlyerPage() {
   });
 
   return (
-    <div className="max-w-md mx-auto text-center flex flex-col items-center gap-6 py-8 print:py-0">
+    <div className="max-w-md mx-auto text-center flex flex-col items-center gap-6 px-4 py-8 print:py-0">
       <h1 className="font-display text-5xl font-semibold leading-tight">
         🌻 Give<span className="text-give">Share</span>
       </h1>

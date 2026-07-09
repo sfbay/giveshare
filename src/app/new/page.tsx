@@ -16,7 +16,7 @@ export default async function NewPostPage({
   const { error } = await searchParams;
 
   return (
-    <div className="max-w-xl mx-auto">
+    <div className="max-w-xl mx-auto px-4 py-8">
       <h1 className="font-display text-3xl font-semibold mb-1">
         Pin something to the board
       </h1>

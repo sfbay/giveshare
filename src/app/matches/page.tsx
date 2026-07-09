@@ -30,7 +30,7 @@ export default async function MatchesPage({
   const total = sections.reduce((n, s) => n + s.matches.length, 0);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="mx-auto w-full max-w-5xl px-4 py-8 flex flex-col gap-8">
       <div>
         {welcome && (
           <p className="mb-4 inline-block card-pin tilt-r rounded-sm px-4 py-2 text-sm bg-give-soft">

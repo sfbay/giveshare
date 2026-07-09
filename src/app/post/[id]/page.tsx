@@ -27,7 +27,7 @@ export default async function PostPage({
   ).slice(0, 6);
 
   return (
-    <div className="flex flex-col gap-8 max-w-3xl mx-auto">
+    <div className="flex flex-col gap-8 max-w-3xl mx-auto px-4 py-8">
       <div className="max-w-md">
         <PostCard post={post} />
       </div>
