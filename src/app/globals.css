@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #faf5ea;
+  --color-paper: #fffdf6;
+  --color-ink: #2b2418;
+  --color-ink-soft: #6b5f4b;
+  --color-line: #d9cdb4;
+  --color-give: #3d6b46;
+  --color-give-soft: #e4efe2;
+  --color-need: #c14a24;
+  --color-need-soft: #fbe8dd;
+  --color-sun: #e8a33d;
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-karla);
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  /* faint paper grain */
+  background-image: radial-gradient(
+    rgba(43, 36, 24, 0.055) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+.card-pin {
+  background: var(--color-paper);
+  border: 1px solid var(--color-ink);
+  box-shadow: 4px 4px 0 rgba(43, 36, 24, 0.9);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.card-pin:hover {
+  transform: rotate(0deg) translateY(-2px);
+  box-shadow: 6px 6px 0 rgba(43, 36, 24, 0.9);
+}
+.tilt-l {
+  transform: rotate(-0.5deg);
+}
+.tilt-r {
+  transform: rotate(0.5deg);
+}
+
+.stamp {
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+  padding: 1px 7px;
+  font-size: 11px;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  display: inline-block;
+}
+
+.squiggle {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--color-sun);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
