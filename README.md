@@ -15,18 +15,24 @@ drop your email → see your matches.
   see [`src/lib/match.ts`](src/lib/match.ts) (unit-tested).
 - **Connections happen over email.** "Connect" logs a row (for the community
   stats) and opens a prefilled `mailto:` — no in-app inbox to build or check.
+- **Email updates** via Resend: a welcome email on join, and grouped match
+  alerts to neighbors whose open posts match a newly created one. Without
+  `RESEND_API_KEY` the email layer silently no-ops.
 - **Auth** is a name + emoji + email cookie session. It's a demo; be kind.
 
 ## Stack
 
 Next.js (App Router + Server Actions) · Tailwind CSS 4 · Drizzle ORM ·
-Neon Postgres · Vitest · deployed on Vercel.
+Neon Postgres · Resend · Vitest · deployed on Vercel.
 
 ## Running locally
 
 ```bash
 pnpm install
 echo 'DATABASE_URL=postgres://…' > .env.local   # any Postgres works
+# optional, for outbound email:
+#   RESEND_API_KEY=re_…            (domain-verified account)
+#   EMAIL_FROM="GiveShare 🌻 <hello@yourdomain>"
 pnpm db:push     # create tables
 pnpm db:seed     # 10 fictional neighbors with overlapping gives/needs
 pnpm dev
