@@ -30,14 +30,15 @@ export async function sendMatchAlerts(alerts: MatchAlert[]): Promise<void> {
   if (!resend || alerts.length === 0) return;
 
   const results = await Promise.allSettled(
-    alerts.map((alert) => {
+    alerts.map(async (alert) => {
       const lines = alert.pairs
         .map(
           (p) =>
             `<li style="margin-bottom: 8px;"><strong>${p.theirs.user.name}</strong> posted the ${p.theirs.kind} “${p.theirs.title}” — it matches your ${p.yours.kind} <strong>“${p.yours.title}”</strong></li>`,
         )
         .join("");
-      return resend.emails.send({
+      // Resend returns { data, error } — API failures do NOT throw.
+      const { error } = await resend.emails.send({
         from: FROM,
         to: alert.user.email,
         subject: `🌻 ${alert.pairs.length === 1 ? "A neighbor matches" : `${alert.pairs.length} neighbors match`} your GiveShare post`,
@@ -48,6 +49,7 @@ export async function sendMatchAlerts(alerts: MatchAlert[]): Promise<void> {
           <p style="${styles.muted}">You're getting this because you posted on the GiveShare neighborhood board.</p>
         </div></div>`,
       });
+      if (error) throw new Error(`${error.name}: ${error.message}`);
     }),
   );
   for (const r of results) {
@@ -65,7 +67,8 @@ export async function sendWelcome(user: User, matchCount: number): Promise<void>
       : `<p>No matches yet, but the board refills all the time — we'll email you when a neighbor matches one of your posts.</p>`;
 
   try {
-    await resend.emails.send({
+    // Resend returns { data, error } — API failures do NOT throw.
+    const { error } = await resend.emails.send({
       from: FROM,
       to: user.email,
       subject: `🌻 Welcome to the GiveShare board, ${user.name}!`,
@@ -76,6 +79,7 @@ export async function sendWelcome(user: User, matchCount: number): Promise<void>
         <p style="${styles.muted}">GiveShare · the neighborhood barter board · be kind, barter often</p>
       </div></div>`,
     });
+    if (error) console.error("welcome email failed:", error.name, error.message);
   } catch (err) {
     console.error("welcome email failed:", err);
   }
